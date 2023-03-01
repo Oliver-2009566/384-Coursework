@@ -22,7 +22,7 @@ public class PlayerControls : MonoBehaviour
         
         movement *= Time.deltaTime;
 
-        transform.Translate(movement.x, movement.y, 0);
+        transform.Translate(movement.x, movement.y, 0, Camera.main.transform);
 
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
