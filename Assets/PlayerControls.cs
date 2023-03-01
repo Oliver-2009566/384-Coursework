@@ -23,5 +23,11 @@ public class PlayerControls : MonoBehaviour
         movement *= Time.deltaTime;
 
         transform.Translate(movement.x, movement.y, 0);
+
+        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+        Vector2 direction = mousePosition - transform.position;
+        float angle = Vector2.SignedAngle(Vector2.right, direction);
+        transform.eulerAngles = new Vector3(0, 0, angle);
     }
 }
