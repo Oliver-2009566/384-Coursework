@@ -15,6 +15,11 @@ public class AsteroidControl : MonoBehaviour
     // Start is called before the first frame update
     void Start() 
     {   
+        transform.position = new Vector3(Random.Range(leftBoundary, rightBoundary), 0, Random.Range(topBoundary, bottomBoundary));
+
+        float scale = Random.Range(0.3f, 5f);
+        transform.localScale = new Vector3(scale, scale, scale);
+
         speedX = Random.Range(-5f, 5f);
         speedY = Random.Range(-5f, 5f);
 
@@ -25,6 +30,8 @@ public class AsteroidControl : MonoBehaviour
         Vector2 direction = transform.position + movement;
         float angle = Vector2.SignedAngle(Vector2.right, direction);
         transform.eulerAngles = new Vector3(0, 0, angle);
+
+        StartCoroutine(deathTimer());
     }
 
     // Update is called once per frame
@@ -48,4 +55,13 @@ public class AsteroidControl : MonoBehaviour
             transform.position = new Vector3(leftBoundary, transform.position.y, 0);
         }
     }
+
+    IEnumerator deathTimer()
+    {
+        yield return new WaitForSeconds(5f);
+        Camera cam = GameObject.Find("Camera").GetComponent<Camera>();
+        ScreenShake cameraShake = cam.GetComponent<ScreenShake>();
+        cameraShake.TriggerShake();
+        Destroy(gameObject);
+    }    
 }

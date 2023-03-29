@@ -10,9 +10,11 @@ public class PlayerControls : MonoBehaviour
     public float leftBoundary   = -10.65f;
     public float rightBoundary  =  10.65f;
 
+    public GameObject asteroid;
+
     // Start is called before the first frame update
     void Start() {
-
+        StartCoroutine(asteroidSpawner());
     }
 
     // Update is called once per frame
@@ -50,5 +52,15 @@ public class PlayerControls : MonoBehaviour
             transform.position = new Vector3(leftBoundary, transform.position.y, 0);
         }
 
+    }
+
+    IEnumerator asteroidSpawner()
+    {
+        for (int i = 0; i < 100; i++)
+        {
+           yield return new WaitForSeconds(0.1f);
+           Instantiate(asteroid);
+        }
+        
     }
 }
