@@ -4,62 +4,67 @@ using UnityEngine;
 
 public class PlayerControls : MonoBehaviour
 {
-    public Vector2 speed = new Vector2(5, 5);
-    public float topBoundary    =  5.5f;
-    public float bottomBoundary = -5.5f;
-    public float leftBoundary   = -10.65f;
-    public float rightBoundary  =  10.65f;
+    public float moveSpeed = 5f;
+    public int fireRate = 10;
+    public Rigidbody2D rb;
+    public float verticalBoundary =  5.5f;
+    public float horizontalBoundary = 10.65f;
 
-    public GameObject asteroid;
+    Vector2 moveDirection;
+    Vector2 mousePosition;
 
-    // Start is called before the first frame update
-    void Start() {
-        StartCoroutine(asteroidSpawner());
-    }
+    public GameObject bulletPrefab;
+    public Transform firePoint;
+    public float fireForce = 20f;
+    private bool shot = false;
+
 
     // Update is called once per frame
     void Update()
     {   
-        // Gets the inputs of the player
-        float inputX = Input.GetAxis("Horizontal");
-        float inputY = Input.GetAxis("Vertical");
-        // Sets where it should move based on the input strength, and the speed of the object
-        Vector3 movement = new Vector3(speed.x * inputX, speed.y * inputY, 0); 
-        // Moves based on time since last frame, in order to keep it consistent on different refresh rates
-        movement *= Time.deltaTime;
-        // Move the object using the values in movement
-        transform.Translate(movement.x, movement.y, 0, Camera.main.transform);
+        float moveX = Input.GetAxisRaw("Horizontal");
+        float moveY = Input.GetAxisRaw("Vertical");
 
-        // Gets the position of the mouse
-        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        // Gets a direction from the player character, to the mouse position
-        Vector2 direction = mousePosition - transform.position;
-        // Calculate the angle at which the mouse is relative to the player character
-        float angle = Vector2.SignedAngle(Vector2.right, direction);
-        // Rotate the player character to the angle we just calculated
-        transform.eulerAngles = new Vector3(0, 0, angle);
+        if(Input.GetMouseButton(0))
+        {
+            StartCoroutine(fireBullet());
+        }
+
+        moveDirection = new Vector2(moveX, moveY).normalized;
+        mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
         // Screen wrapping. If the player character goes beyond a defined boundary, change its coordinated to the opposite boundary
-        if (transform.position.y > topBoundary) {
-            transform.position = new Vector3(transform.position.x, bottomBoundary, 0);
-        } else if (transform.position.y < bottomBoundary) {
-            transform.position = new Vector3(transform.position.x, topBoundary, 0);
+        if (transform.position.y > verticalBoundary) {
+            transform.position = new Vector3(transform.position.x, -(verticalBoundary), 0);
+        } else if (transform.position.y < -(verticalBoundary)) {
+            transform.position = new Vector3(transform.position.x, verticalBoundary, 0);
         }
 
-        if (transform.position.x < leftBoundary) {
-            transform.position = new Vector3(rightBoundary, transform.position.y, 0);
-        } else if (transform.position.x > rightBoundary) {
-            transform.position = new Vector3(leftBoundary, transform.position.y, 0);
+        if (transform.position.x < -(horizontalBoundary)) {
+            transform.position = new Vector3(horizontalBoundary, transform.position.y, 0);
+        } else if (transform.position.x > horizontalBoundary) {
+            transform.position = new Vector3(-(horizontalBoundary), transform.position.y, 0);
         }
-
     }
 
-    IEnumerator asteroidSpawner()
+    private void FixedUpdate()
     {
-        for (int i = 0; i < 100; i++)
+        rb.velocity = new Vector2(moveDirection.x * moveSpeed, moveDirection.y * moveSpeed);
+
+        Vector2 aimDirection = mousePosition - rb.position;
+        float aimAngle = Mathf.Atan2(aimDirection.y, aimDirection.x) * Mathf.Rad2Deg - 90f;
+        rb.rotation = aimAngle;
+    }
+
+    IEnumerator fireBullet()
+    {
+        if(shot == false)
         {
-           yield return new WaitForSeconds(0.1f);
-           Instantiate(asteroid);
+            shot = true;
+            GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
+            bullet.GetComponent<Rigidbody2D>().AddForce(firePoint.up * fireForce, ForceMode2D.Impulse);
+            yield return new WaitForSeconds(1f / (float)fireRate);
+            shot = false;
         }
         
     }

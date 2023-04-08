@@ -5,21 +5,15 @@ using UnityEngine;
 
 public class AsteroidControl : MonoBehaviour
 {
-    public float topBoundary    =  6.5f;
-    public float bottomBoundary = -6.5f;
-    public float leftBoundary   = -12.1f;
-    public float rightBoundary  =  12.1f;
+    public float verticalBoundary =  5.5f;
+    public float horizontalBoundary = 10.65f;
     public float speedX;
     public float speedY;
+    private bool spawnInvicicibility = true;
 
     // Start is called before the first frame update
     void Start() 
     {   
-        transform.position = new Vector3(Random.Range(leftBoundary, rightBoundary), 0, Random.Range(topBoundary, bottomBoundary));
-
-        float scale = Random.Range(0.3f, 5f);
-        transform.localScale = new Vector3(scale, scale, scale);
-
         speedX = Random.Range(-5f, 5f);
         speedY = Random.Range(-5f, 5f);
 
@@ -30,8 +24,6 @@ public class AsteroidControl : MonoBehaviour
         Vector2 direction = transform.position + movement;
         float angle = Vector2.SignedAngle(Vector2.right, direction);
         transform.eulerAngles = new Vector3(0, 0, angle);
-
-        StartCoroutine(deathTimer());
     }
 
     // Update is called once per frame
@@ -43,25 +35,26 @@ public class AsteroidControl : MonoBehaviour
 
         transform.Translate(movement.x, movement.y, 0, Camera.main.transform);
 
-        if (transform.position.y > topBoundary) {
-            transform.position = new Vector3(transform.position.x, bottomBoundary, 0);
-        } else if (transform.position.y < bottomBoundary) {
-            transform.position = new Vector3(transform.position.x, topBoundary, 0);
+        // Screen wrapping. If the player character goes beyond a defined boundary, change its coordinated to the opposite boundary
+        if (transform.position.y > verticalBoundary) {
+            transform.position = new Vector3(transform.position.x, -(verticalBoundary), 0);
+        } else if (transform.position.y < -(verticalBoundary)) {
+            transform.position = new Vector3(transform.position.x, verticalBoundary, 0);
         }
 
-        if (transform.position.x < leftBoundary) {
-            transform.position = new Vector3(rightBoundary, transform.position.y, 0);
-        } else if (transform.position.x > rightBoundary) {
-            transform.position = new Vector3(leftBoundary, transform.position.y, 0);
+        if (transform.position.x < -(horizontalBoundary)) {
+            transform.position = new Vector3(horizontalBoundary, transform.position.y, 0);
+        } else if (transform.position.x > horizontalBoundary) {
+            transform.position = new Vector3(-(horizontalBoundary), transform.position.y, 0);
         }
     }
 
-    IEnumerator deathTimer()
+    //IEnumerator makeVulnerable
+    //{
+
+    //}
+    private void OnCollisionEnter2D(Collision2D other)
     {
-        yield return new WaitForSeconds(5f);
-        Camera cam = GameObject.Find("Camera").GetComponent<Camera>();
-        ScreenShake cameraShake = cam.GetComponent<ScreenShake>();
-        cameraShake.TriggerShake();
         Destroy(gameObject);
-    }    
+    }  
 }
