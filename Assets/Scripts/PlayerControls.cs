@@ -13,11 +13,19 @@ public class PlayerControls : MonoBehaviour
     Vector2 moveDirection;
     Vector2 mousePosition;
 
+    [SerializeField]
+    private AudioClip shootClip = null;
+    private AudioSource source = null;
     public GameObject bulletPrefab;
     public Transform firePoint;
     public float fireForce = 20f;
     private bool shot = false;
 
+    void Start()
+    {
+        source = GetComponent<AudioSource>();
+        source.clip = shootClip;
+    }
 
     // Update is called once per frame
     void Update()
@@ -61,6 +69,7 @@ public class PlayerControls : MonoBehaviour
         if(shot == false)
         {
             shot = true;
+            source.Play();
             GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
             bullet.GetComponent<Rigidbody2D>().AddForce(firePoint.up * fireForce, ForceMode2D.Impulse);
             yield return new WaitForSeconds(1f / (float)fireRate);

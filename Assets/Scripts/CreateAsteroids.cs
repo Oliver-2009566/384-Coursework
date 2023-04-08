@@ -21,7 +21,7 @@ public class CreateAsteroids : MonoBehaviour
         {
             int spawnLocation = Random.Range(0, 3);
             Vector2 asteroidPos;
-            float scale = Random.Range(0.3f, 5f);
+            float scale = Random.Range(0.5f, 5f);
             if (spawnLocation == 0)
             {
                 // Left side
@@ -46,7 +46,7 @@ public class CreateAsteroids : MonoBehaviour
             asteroid.transform.localPosition = asteroidPos;
             asteroid.transform.localScale = new Vector3(scale, scale, 1);
 
-            yield return new WaitForSeconds(5f);
+            yield return new WaitForSeconds(2f);
         }
     }
 }

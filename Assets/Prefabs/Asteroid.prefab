@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: -3780751001077819066}
   m_Layer: 0
   m_Name: Asteroid
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -140,7 +140,7 @@ MonoBehaviour:
   horizontalBoundary: 10.65
   speedX: 0
   speedY: 0
-  asteroidPrefab: {fileID: 4406472943943505415}
+  explosionVFX: {fileID: 3433722266414607816, guid: 2ab763e62cbdf1b428768499cadbf87e, type: 3}
 --- !u!60 &-3780751001077819066
 PolygonCollider2D:
   m_ObjectHideFlags: 0
