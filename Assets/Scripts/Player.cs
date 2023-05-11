@@ -37,7 +37,7 @@ public class Player : MonoBehaviour
 
         if(Input.GetMouseButton(0))
         {
-            StartCoroutine(fireBullet());
+            StartCoroutine(FireBullet());
         }
 
         moveDirection = new Vector2(moveX, moveY).normalized;
@@ -66,7 +66,7 @@ public class Player : MonoBehaviour
         rb.rotation = aimAngle;
     }
 
-    IEnumerator fireBullet()
+    IEnumerator FireBullet()
     {
         if(shot == false)
         {
@@ -81,20 +81,17 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    public void Death()
     {
-        if(collision.transform.gameObject.tag == "Enemy")
+        if(vulnerable)
         {
-            if(vulnerable)
-            {
-                Destroy(gameObject);
-                Camera cam = GameObject.Find("Camera").GetComponent<Camera>();
-                cam.GetComponent<Shake>().StartShake();
-                GameObject explosion = Instantiate(explosionVFX);
-                explosion.transform.position = transform.position;
-                explosion.transform.localScale = transform.localScale;
-                Destroy(explosion, 0.75f);
-            }   
+            Destroy(gameObject);
+            Camera cam = GameObject.Find("Camera").GetComponent<Camera>();
+            cam.GetComponent<Shake>().StartShake();
+            GameObject explosion = Instantiate(explosionVFX);
+            explosion.transform.position = transform.position;
+            explosion.transform.localScale = transform.localScale;
+            Destroy(explosion, 0.75f);  
         }
     }  
 }

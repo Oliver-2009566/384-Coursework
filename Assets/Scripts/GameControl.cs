@@ -8,7 +8,7 @@ public class GameControl : MonoBehaviour
     public float horizontalBoundary = 18.7f;
     public GameObject playerPrefab;
     public GameObject asteroidPrefab;
-    private int score;
+    private int score = 0;
     
     
     // Start is called before the first frame update
